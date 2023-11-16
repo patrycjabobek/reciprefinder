@@ -1,0 +1,37 @@
+.recipes-list__container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.recipe-excerpt {
+  h3 {
+    height: 50px;
+    line-height: 30px;
+    margin: 30px;
+    align-items: center;
+  }
+
+  a {
+    display: block;
+    padding: 10px 5px;
+  }
+}
+
+.square {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 1px solid red;
+  img {
+    position: absolute;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}

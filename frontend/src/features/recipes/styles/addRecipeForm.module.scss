@@ -1,0 +1,40 @@
+@import "../../../assets/scss/variables";
+
+.add_recipe--container {
+  width: 100%;
+}
+.add_recipe--header {
+}
+.add_recipe--form {
+  // display: grid;
+
+  // grid-template-rows:    repeat(3, 150px);
+  // grid-template-columns: repeat(3, 1fr);
+
+  .form-group {
+    display: inline-block;
+  }
+
+  textarea {
+    width: 320px;
+    font-family: Roboto, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: rgb(42, 21, 21);
+    background: #fff;
+    border: 1px solid darkgray;
+    // box-shadow: 0px 2px 2px lightgray;
+
+    &:hover {
+      border-color: rgb(135, 135, 222);
+    }
+
+    &:focus {
+      border-color: rgb(112, 112, 151);
+      box-shadow: 0 0 0 3px rgb(112, 112, 151);
+    }
+  }
+}

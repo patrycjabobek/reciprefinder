@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+img {
+  width: 300px;
+  height: 300px;
+}
+
+h1 {
+  font-family: 'Quicksand', sans-serif;
+  line-height: 1.25;
+}
+h2,
+h3,
+p {
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.5;
+  /* color: #0000; */
+}
+
+a {
+  color: black;
+  background-color: white;
+  text-decoration: none;
+}
+a:focus,
+a:hover {
+  color: rgb(94, 54, 54);
+  text-decoration: none;
+}
+
+.bold {
+  font-weight: bold;
+}
+.italic {
+  font-style: italic;
+}
