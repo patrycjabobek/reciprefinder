@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
-import {UserSchema} from "./User.js"
+import { UserSchema } from "./User.js";
 
+const IngredientSchema = mongoose.Schema({
+  amount: String,
+  ingredientName: String,
+});
 
 const RecipeSchema = mongoose.Schema({
   title: {
@@ -11,12 +15,9 @@ const RecipeSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  ingridients: {
+  ingredients: {
     type: [
-      {
-        amount: String,
-        ingridientName: String,
-      },
+      IngredientSchema
     ],
     required: true,
   },
@@ -25,12 +26,12 @@ const RecipeSchema = mongoose.Schema({
     required: true,
   },
   image: {
-    type: String,
+    data: Buffer,
+    contentType: String,
   },
-  createdAt: {
+  createdAtDate: {
     type: Date,
-    default: Date.now,
-    required: true,
+    default: Date.now
   },
   // user: {
   //   type: UserSchema,

@@ -10,7 +10,7 @@ const AddRecipeForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState("");
-  const [ingridients, setIngridients] = useState([{ amount: "", name: "" }]);
+  const [ingredients, setIngredients] = useState([{ amount: "", ingredientName: "" }]);
   const [category, setCategory] = useState("");
   const [user, setUser] = useState(null);
   const [requestStatus, setRequestStatus] = useState("idle");
@@ -24,36 +24,37 @@ const AddRecipeForm = () => {
 
   const onInputFieldsValueChange = (event, index) => {
     let { name, value } = event.target;
-    let onChangeValue = [...ingridients];
+    let onChangeValue = [...ingredients];
     onChangeValue[index][name] = value;
-    setIngridients(onChangeValue);
+    setIngredients(onChangeValue);
   };
 
   const onAddInputFieldClicked = () => {
-    setIngridients([...ingridients, { amount: "", name: "" }]);
+    setIngredients([...ingredients, { amount: "", ingredientName: "" }]);
   };
 
   const onDeleteinputFieldClicked = (index) => {
-    const newArrayOfInputs = [...ingridients];
+    const newArrayOfInputs = [...ingredients];
     newArrayOfInputs.splice(index, 1);
 
-    setIngridients(newArrayOfInputs);
+    setIngredients(newArrayOfInputs);
   };
 
   const canSave =
-    [title, content, ingridients].every(Boolean) && requestStatus === "idle";
+    [title, content, ingredients, category].every(Boolean) ;
 
-  const onSaveRecipeClicked = async () => {
-    if (cancelAnimationFrame) {
+  const onSaveRecipeClicked =  () => {
+    if (canSave) {
       try {
         setRequestStatus("pending");
-        await dispatch(
-          createRecipe({ title, content, ingridients, image, category, user: null })
-        ).unwrap();
+         dispatch(
+          createRecipe({ title, content, ingredients, image, category })
+        )
         setTitle("");
         setContent("");
         setImage("");
         setCategory("");
+        setIngredients([{ amount: "", ingredientName: "" }]);
       } catch (error) {
         console.error("Failed to save the post: ", error);
       } finally {
@@ -75,14 +76,14 @@ const AddRecipeForm = () => {
       />
       <Input
         type="text"
-        name="name"
-        id="name"
-        placeholder="1 cup"
-        value={input.name}
+        name="ingredientName"
+        id="ingredientName"
+        placeholder="flour"
+        value={input.ingredientName}
         onChange={(event) => onInputFieldsValueChange(event, index)}
         required
       />
-      {ingridients.length !== 1 && (
+      {ingredients.length !== 1 && (
         <button
           type="button"
           onClick={() => onDeleteinputFieldClicked(index)}
@@ -97,7 +98,7 @@ const AddRecipeForm = () => {
   return (
     <section className={styles["add_recipe--container"]}>
       <h2 className={styles["add_recipe--header "]}>Add new recipe</h2>
-      <form className={styles["add_recipe--form"]}>
+      <form className={styles["add_recipe--form"]} action="/" method="post" encType="multipart/form-data">
         <div className={styles["form-group"]}>
           <label htmlFor="recipeTitle">Recipe title:</label>
           <Input
@@ -110,13 +111,13 @@ const AddRecipeForm = () => {
           />
         </div>
 
-        <h4>Ingridients</h4>
+        <h4>Ingredients</h4>
         <label htmlFor="amount">Amount</label>
-        <label htmlFor="name">Name</label>
+        <label htmlFor="ingredientName">Name</label>
 
-        {ingridients &&
-          ingridients.map((item, index) => ingridientsInputFields(item, index))}
-        {ingridients.length >= 1 && (
+        {ingredients &&
+          ingredients.map((item, index) => ingridientsInputFields(item, index))}
+        {ingredients.length >= 1 && (
           <button type="button" onClick={onAddInputFieldClicked}>
             Add new ingridient
           </button>
@@ -146,6 +147,8 @@ const AddRecipeForm = () => {
         <Input
           type="file"
           src={image}
+          name="image"
+          accept="image/png, image/jpeg, image/jpg"
           alt=""
           id="recipeImage"
           onChange={onImageChanged}
@@ -153,7 +156,8 @@ const AddRecipeForm = () => {
         <button
           type="button"
           onClick={onSaveRecipeClicked}
-          className={styles["save_wbutton"]}
+          className={styles["save_button"]}
+          disabled={!canSave}
         >
           Save recipe
         </button>

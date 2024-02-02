@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateRecipe } from "./recipesSlice";
+import { updateRecipe, selectRecipeById } from "./recipesSlice";
 
 import { Input } from "@mui/base/Input";
 
@@ -10,15 +10,15 @@ import styles from "./styles/editRecipeForm.module.scss";
 export const EditRecipeForm = () => {
   const { recipeId } = useParams();
 
-  const recipe = useSelector((state) =>
-    state.recipes.recipes.find((recipe) => recipe.id === recipeId)
-  );
+  const recipe = useSelector((state) => selectRecipeById(state, recipeId));
+  let recipeStatus = useSelector((state) => state.recipes.status);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const [title, setTitle] = useState(recipe.title);
-  const [content, setContent] = useState(recipe.content);
-  const [category, setCategory] = useState(recipe.category);
-  const [image, setImage] = useState(recipe.image);
-  const [ingridients, setIngridients] = useState(recipe.ingridients);
+  const [title, setTitle] = useState(recipe.title || "");
+  const [content, setContent] = useState(recipe.content || "");
+  const [category, setCategory] = useState(recipe.category || "");
+  const [image, setImage] = useState(recipe.image || "");
+  const [ingredients, setIngredients] = useState(recipe.ingredients || []);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,43 +27,51 @@ export const EditRecipeForm = () => {
   const onContentChanged = (e) => setContent(e.target.value);
   const onCategoryChanged = (e) => setCategory(e.target.value);
   const onImageChanged = (e) => setImage(e.target.value);
-  const onIngridientsChanged = (e) => setIngridients(e.target.value);
+
+  const canSave = [title, content, ingredients, category].every(Boolean);
+
+
+  useEffect(() => {
+    if (isEditing && recipeStatus === "succeeded") {
+      navigate(`/recipes/${recipeId}`);
+    }
+  }, [recipeStatus, navigate, recipeId]);
 
   const onSaveRecipeClicked = () => {
-    if (title && content) {
-      dispatch(
-        updateRecipe({
-          id: recipeId,
-          title,
-          content,
-          ingridients,
-          category,
-          image,
-        })
-      );
-      navigate(`/recipes/${recipeId}`);
+    const updatedRecipe = {
+      _id: recipeId,
+      title,
+      content,
+      ingredients,
+      category,
+      image,
+    };
+    if (canSave) {
+      setIsEditing(true);
+      dispatch(updateRecipe(updatedRecipe));
+      
     }
   };
 
   const onInputFieldsValueChange = (event, index) => {
-    let { name, value } = event.target;
-    let onChangeValue = [...ingridients];
-    onChangeValue[index][name] = value;
-    setIngridients(onChangeValue);
+    const { name, value } = event.target;
+    const updatedIngridients = JSON.parse(JSON.stringify([...ingredients]));
+    updatedIngridients[index][name] = value;
+    setIngredients(updatedIngridients);
   };
 
   const onAddInputFieldClicked = () => {
-    setIngridients([...ingridients, { amount: "", name: "" }]);
+    setIngredients([...ingredients, { amount: "", ingredientName: "" }]);
   };
 
   const onDeleteinputFieldClicked = (index) => {
-    const newArrayOfInputs = [...ingridients];
+    const newArrayOfInputs = [...ingredients];
     newArrayOfInputs.splice(index, 1);
 
-    setIngridients(newArrayOfInputs);
+    setIngredients(newArrayOfInputs);
   };
 
-  const ingridientsInputFields = (input, index) => (
+  const ingredientsInputFields = (input, index) => (
     <div className="form-group" key={index}>
       <Input
         type="text"
@@ -76,14 +84,14 @@ export const EditRecipeForm = () => {
       />
       <Input
         type="text"
-        name="name"
-        id="name"
-        placeholder="1 cup"
-        value={input.name}
+        name="ingredientName"
+        id="ingredientName"
+        placeholder="flour"
+        value={input.ingredientName}
         onChange={(event) => onInputFieldsValueChange(event, index)}
         required
       />
-      {ingridients.length !== 1 && (
+      {ingredients.length !== 1 && (
         <button
           type="button"
           onClick={() => onDeleteinputFieldClicked(index)}
@@ -98,7 +106,7 @@ export const EditRecipeForm = () => {
   return (
     <section>
       <h2>Edit Recipe</h2>
-      <form>
+      <form encType="multipart/form-data">
         <label htmlFor="recipeTitle">Recipe title:</label>
         <input
           type="text"
@@ -108,14 +116,14 @@ export const EditRecipeForm = () => {
           value={title}
           onChange={onTitleChanged}
         />
-        <h4>Ingridients</h4>
+        <h4>Ingredients</h4>
         <label htmlFor="amount">Amount</label>
-        <label htmlFor="name">Name</label>
-        {ingridients &&
-          ingridients.map((item, index) => ingridientsInputFields(item, index))}
-        {ingridients.length >= 1 && (
+        <label htmlFor="ingridientName">Name</label>
+        {ingredients &&
+          ingredients.map((item, index) => ingredientsInputFields(item, index))}
+        {ingredients.length >= 1 && (
           <button type="button" onClick={onAddInputFieldClicked}>
-            Add new ingridient
+            Add new ingredient
           </button>
         )}
         <label htmlFor="recipeContent">Recipe content:</label>
@@ -133,12 +141,12 @@ export const EditRecipeForm = () => {
           name="category"
           id="category"
           placeholder="Pasta"
-          value={title}
+          value={category}
           onChange={onCategoryChanged}
         />
         <label htmlFor="image">Image:</label>
         <input
-          type="image"
+          type="file"
           name="image"
           id="image"
           value={image}
