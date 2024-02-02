@@ -53,7 +53,6 @@ const AddRecipeForm = () => {
         setTitle("");
         setContent("");
         setImage("");
-        setIngridients([]);
         setCategory("");
       } catch (error) {
         console.error("Failed to save the post: ", error);

@@ -3,9 +3,9 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RECIPES } from "../../data/RECIPES";
 import axios from "axios";
 
-import * as api from '../../api/api.js'
 
-const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "http://localhost:8000/";
+
 const initialState = {
   recipes: [],
   status: 'idle',
@@ -17,12 +17,13 @@ const initialState = {
 
 export const fetchRecipes = createAsyncThunk(
   "recipes/fetchRecipes",
-  async () => {
+  async (_, {rejectWithValue}) => {
     try {
-      const response = await fetch(`${baseURL}recipes`);
-      return response?.data;
+      const response = await axios.get(`${baseURL}recipes`);
+
+      return response.data;
     } catch (er) {
-      return er.response.data.message;
+      return  rejectWithValue(er.response.data.message);
     }
   }
 );
@@ -32,6 +33,7 @@ export const createRecipe = createAsyncThunk(
   async (recipe) => {
     try {
       const response = await axios.post(`${baseURL}recipes`, recipe);
+
       return response?.data;
     } catch (er) {
       console.log(er.response.data.message);
@@ -52,7 +54,8 @@ export const updateRecipe = createAsyncThunk(
         createdAt: new Date().getDate(),
         user: recipe.user,
       });
-      return response?.data;
+
+      return response.data;
     } catch (er) {
       console.log(er.response.data.message);
     }
@@ -64,7 +67,8 @@ export const deleteRecipe = createAsyncThunk(
   async (recipeId) => {
     try {
       const response = await axios.delete(`${baseURL}recipes/${recipeId}`);
-      return recipeId;
+
+      return response.data;
     } catch (er) {
       console.log(er.response.data.message);
     }
@@ -76,15 +80,21 @@ const recipesSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchRecipes.pending, (state) => {
+    builder.addCase(fetchRecipes.pending, (state, action) => {
+      console.log("Fulfilled:", action.payload);
       state.isLoading = true;
+      state.status = 'loading'
     });
     builder.addCase(fetchRecipes.fulfilled, (state, action) => {
+      console.log("Pending");
+      state.status = 'succeeded'
       state.isLoading = false;
       state.isSuccess = true;
       state.data = action.payload;
     });
     builder.addCase(fetchRecipes.rejected, (state, action) => {
+      console.log("Rejected:", action.payload);
+      state.status = 'failed'
       state.isLoading = false;
       state.isSuccess = false;
       state.isError = true;
@@ -134,7 +144,6 @@ const recipesSlice = createSlice({
     });
   },
 });
-
 
 
 export default recipesSlice.reducer;

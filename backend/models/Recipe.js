@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {UserSchema} from "./User.js"
 
 
-const RecipeSchema = new mongoose.Schema({
+const RecipeSchema = mongoose.Schema({
   title: {
     type: String,
     required: true,

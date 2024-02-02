@@ -7,19 +7,16 @@ import styles from "./styles/recipesList.module.scss";
 import { fetchRecipes, selectAllRecipes } from "./recipesSlice";
 
 const RecipesList = () => {
-  const recipes = useSelector(selectAllRecipes);
   const dispatch = useDispatch();
-  // const recipes = dispatch(fetchRecipes());
 
+  const recipes = useSelector(selectAllRecipes);
   const recipeStatus = useSelector((state) => state.recipes.status);
 
   useEffect(() => {
-    console.log(recipeStatus);
     if (recipeStatus === "idle") {
       dispatch(fetchRecipes());
     }
-    console.log(recipes);
-
+    console.log("Recipes:", recipes);
   }, [recipeStatus, dispatch]);
 
 
