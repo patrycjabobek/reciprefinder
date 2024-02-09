@@ -1,7 +1,10 @@
+<<<<<<< HEAD
 # Created by https://www.toptal.com/developers/gitignore/api/react,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=react,node
 
 ### Node ###
+=======
+>>>>>>> ba389dc066398f412b2b9de2fb8727d7eaec1e4c
 # Logs
 logs
 *.log
@@ -106,6 +109,10 @@ dist
 
 # vuepress v2.x temp and cache directory
 .temp
+<<<<<<< HEAD
+=======
+.cache
+>>>>>>> ba389dc066398f412b2b9de2fb8727d7eaec1e4c
 
 # Docusaurus cache and generated files
 .docusaurus
@@ -131,6 +138,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+<<<<<<< HEAD
 
 ### Node Patch ###
 # Serverless Webpack directories
@@ -155,3 +163,5 @@ thumb
 sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react,node
+=======
+>>>>>>> ba389dc066398f412b2b9de2fb8727d7eaec1e4c
