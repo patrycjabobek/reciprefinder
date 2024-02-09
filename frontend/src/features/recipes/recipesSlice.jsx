@@ -1,12 +1,12 @@
-import { createSlice, nanoid } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { RECIPES } from "../../data/RECIPES";
 import axios from "axios";
 
 const baseURL = "http://localhost:8000/";
 
 const initialState = {
   recipes: [],
+  // recipe: null,
   status: "idle",
   error: null,
 };
@@ -22,6 +22,18 @@ export const fetchRecipes = createAsyncThunk(
     }
   }
 );
+
+// export const fetchSingleRecipeById = createAsyncThunk(
+//   "recipe/fetchSingleRecipeById",
+//   async (recipe) => {
+//     try {
+//       const response = await axios.get(`${baseURL}recipe/${recipe._id}`);
+//       return response.data;
+//     } catch (er) {
+//       return er.response.data.message;
+//     }
+//   }
+// );
 
 export const createRecipe = createAsyncThunk(
   "recipes/createRecipe",
@@ -47,9 +59,6 @@ export const updateRecipe = createAsyncThunk(
         image: recipe.image,
         // user: recipe.user,
       });
-      // if( response.data){
-      //   return recipe._id;
-      // };
       return response.data;
     } catch (er) {
       return er.response.data.message;
@@ -124,11 +133,23 @@ const recipesSlice = createSlice({
         if (index !== -1) {
           state.recipes[index] = action.payload.response;
         }
-      })
-      .addCase(updateRecipe.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.error.message;
       });
+      // .addCase(updateRecipe.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      // })
+      // .addCase(fetchSingleRecipeById.pending, (state) => {
+      //   state.status = "loading";
+      // })
+      // .addCase(fetchSingleRecipeById.fulfilled, (state, action) => {
+      //   state.status = "succeeded";
+
+      //   // state.recipe = action.payload;
+      // })
+      // .addCase(fetchSingleRecipeById.rejected, (state, action) => {
+      //   state.status = "failed";
+      //   state.error = action.error.message;
+      // });
   },
 });
 

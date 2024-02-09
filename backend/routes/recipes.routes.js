@@ -2,7 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import {
   getAllRecipes,
-  getSingleRecipe,
+  getSingleRecipeById,
   createRecipe,
   updateRecipe,
   deleteRecipe,
@@ -12,7 +12,7 @@ const upload = multer({ storage: storage });
 const router = Router();
 
 router.get("/", getAllRecipes);
-router.get("/:id", getSingleRecipe);
+router.get("/:id", getSingleRecipeById);
 router.post("/", upload.single("image"), createRecipe);
 router.put("/:id", updateRecipe);
 router.delete("/:id", deleteRecipe);

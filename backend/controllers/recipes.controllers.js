@@ -11,7 +11,7 @@ export const getAllRecipes = asyncHandler(async (req, res) => {
   res.status(200).json(response);
 });
 
-export const getSingleRecipe = asyncHandler(async (req, res) => {
+export const getSingleRecipeById = asyncHandler(async (req, res) => {
   await Recipe.findOne(req.params.id);
   res.status(200).json(response);
 });
